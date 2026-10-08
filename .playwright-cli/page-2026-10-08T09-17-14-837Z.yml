@@ -1,0 +1,15 @@
+- main [ref=f1e3]:
+  - generic [ref=f1e4]:
+    - generic [ref=f1e21]:
+      - paragraph [ref=f1e22]: A forest simulation
+      - heading "Ecosystem Guardian" [level=1] [ref=f1e23]
+      - paragraph [ref=f1e24]: Take charge of the Elderwood watershed. Balance water, soil, plants and animals across the seasons — and uncover why the fish are disappearing.
+      - generic [ref=f1e25]:
+        - generic [ref=f1e26]:
+          - generic [ref=f1e27]: World seed (optional)
+          - textbox "World seed (optional)" [ref=f1e28]:
+            - /placeholder: Leave blank for a random forest
+        - generic [ref=f1e29]:
+          - button "New Game" [ref=f1e30]
+          - button "Continue" [ref=f1e34]
+    - generic [ref=f1e35]: A saved forest waits in this browser. Autosaves run every 30 days.
