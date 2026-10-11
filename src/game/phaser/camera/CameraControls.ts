@@ -130,14 +130,28 @@ export default class CameraControls {
     this.clamp()
   }
 
-  /** Keep the viewport inside the world; centre it when zoomed out past the edges. */
-  private clamp(): void {
-    const viewWidth = this.camera.width / this.camera.zoom
-    const viewHeight = this.camera.height / this.camera.zoom
-    const maxX = this.world.width - viewWidth
-    const maxY = this.world.height - viewHeight
-    this.camera.scrollX = maxX <= 0 ? maxX / 2 : Math.max(0, Math.min(this.camera.scrollX, maxX))
-    this.camera.scrollY = maxY <= 0 ? maxY / 2 : Math.max(0, Math.min(this.camera.scrollY, maxY))
+/** Keep the viewport inside the world; centre it when zoomed out past the edges. */
+private clamp(): void {
+    const zoom = this.camera.zoom
+    const viewWidth = this.camera.width / zoom
+    const viewHeight = this.camera.height / zoom
+
+    // Phaser anchors zoom on the camera centre, so below zoom 1 the visible
+    // rect reaches past the scroll position on every side. Backing the scroll
+    // off by that bleed is what lets the world edge meet the viewport edge
+    // instead of leaving a dead band the player can never pan past.
+    const bleedX = (viewWidth - this.camera.width) / 2
+    const bleedY = (viewHeight - this.camera.height) / 2
+
+    const minX = bleedX
+    const maxX = this.world.width - viewWidth + bleedX
+    const minY = bleedY
+    const maxY = this.world.height - viewHeight + bleedY
+
+    this.camera.scrollX =
+      maxX <= minX ? (minX + maxX) / 2 : Math.max(minX, Math.min(this.camera.scrollX, maxX))
+    this.camera.scrollY =
+      maxY <= minY ? (minY + maxY) / 2 : Math.max(minY, Math.min(this.camera.scrollY, maxY))
   }
 
   private detach(): void {

@@ -35,7 +35,7 @@ export default function EventFeed() {
   if (!activeEvents || activeEvents.length === 0) return null
 
   return (
-    <div className="absolute left-3 top-3 z-20 flex w-60 flex-col gap-1.5">
+    <div className="pointer-events-none absolute left-3 top-3 z-20 flex w-60 flex-col gap-1.5">
       {activeEvents.map((event) => {
         const def = EVENT_DEFINITIONS[event.definitionId]
         const total = Math.max(1, phaseLength(event.phase, def))
