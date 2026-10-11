@@ -7,10 +7,11 @@ import InspectionPanel from '@/components/inspection/InspectionPanel'
 
 import GameCanvas from './GameCanvas'
 import PanelOverlay from './PanelOverlay'
-import { useSimulationLoop } from './useSimulationLoop'
+import { useHotkeys, useSimulationLoop } from './useSimulationLoop'
 
 export default function GameScreen() {
   useSimulationLoop()
+  useHotkeys()
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-bark-950">

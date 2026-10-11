@@ -1,32 +1,89 @@
-# React + TypeScript + Vite
+# Ecosystem Guardian
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Take charge of the Elderwood watershed. Balance water, soil, plants and animals
+across an endless top-down forest, react to ecological crises as they surface,
+and keep the ecosystem stable for as long as you can.
 
-Currently, two official plugins are available:
+A top-down 2D ecosystem simulation: **Phaser** renders the world, **React**
+drives the interface, and a **pure TypeScript simulation** does the thinking.
+No backend, no accounts — the whole game runs in the browser and saves to
+`localStorage`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Quick start
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm ci
+npm run dev        # http://localhost:5173
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Vite dev server with HMR |
+| `npm run build` | Typecheck the project, then build to `dist/` |
+| `npm run preview` | Serve the production build |
+| `npm run typecheck` | `tsc -b` across app/node projects |
+| `npm run lint` | oxlint over `src/` |
+| `npm run test` | Vitest suite (simulation, assets, app shell) |
+| `npm run assets` | Regenerate every art asset (see [docs/ASSETS.md](docs/ASSETS.md)) |
+
+## How to play
+
+- **Read the vitals.** Water quality, soil fertility, vegetation coverage and
+  health, wildlife health and biodiversity drift with the seasons and with
+  whatever you do to the forest.
+- **Watch the world, not the numbers.** Drought, flood, storm, wildfire and
+  disease all strike specific places on the map. Pan and zoom to find them.
+- **Investigate discoveries.** Symptoms ("Fish populations are falling") arrive
+  before you know the cause. Each investigation reveals one more link in the
+  chain, so digging on a wrong lead costs days.
+- **Fund interventions.** Projects (planting, river restoration, predator
+  reintroduction, corridors, firebreaks) cost money and time, and pay off on
+  their own schedule. Start one early rather than during a crisis.
+- **Keep stability up.** Stability is the blended health of the whole system.
+  Falling to zero ends the run; the history panel tracks how long you held on.
+
+### Controls
+
+| Input | Action |
+| --- | --- |
+| Drag | Pan the camera |
+| Wheel | Zoom in/out |
+| Click a tile or animal | Inspect it (and act on it) |
+| `1` `2` `3` `4` | Simulation speed — 1 day per 2s / 1s / 400ms / 100ms |
+| Space | Pause / resume |
+| `Esc` | Close the open panel |
+
+Progress autosaves every 30 days under the `ecosystem-guardian-save` key, and
+whenever you leave the simulation. *Continue* on the main menu restores it.
+
+## Documentation
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — layering, data flow, contracts
+- [docs/SIMULATION.md](docs/SIMULATION.md) — the ecological model and its tuning
+- [docs/PHASER_ARCHITECTURE.md](docs/PHASER_ARCHITECTURE.md) — scenes, depth
+  buckets, renderers, the React↔Phaser bridge
+- [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) — loop, projects, events,
+  discoveries, achievements
+- [docs/ASSETS.md](docs/ASSETS.md) — the procedural art pipeline and licensing
+
+## Project layout
+
+```
+src/
+  simulation/   pure, deterministic ecosystem model (no DOM, no Phaser)
+  data/         species, projects, events and world generation tables
+  game/phaser/  Phaser scenes, renderers, effects, camera, bridge
+  game/world/   world map + spatial index used by the renderers
+  components/   React HUD, panels, dialogs and the canvas host
+  store/        Zustand store — the single source of truth for React
+  types/        shared contracts (game, world, species, events, projects)
+  assets/       asset manifest — the single art contract
+  tests/        vitest suites
+scripts/        deterministic PNG generator
+```
+
+## License
+
+Code is private/proprietary. All art under `public/assets/` is generated by
+`scripts/generate-assets.mjs` and released under CC0 1.0 — see
+[LICENSES/ASSET_LICENSES.md](LICENSES/ASSET_LICENSES.md).

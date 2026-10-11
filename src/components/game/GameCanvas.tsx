@@ -35,8 +35,6 @@ export default function GameCanvas() {
       scene: [BootScene, PreloadScene, ForestScene],
     })
 
-    ;(window as unknown as { __game?: unknown }).__game = game // TEMP DEBUG
-
     const pushAll = (): void => {
       const state = useGameStore.getState()
       bridge.pushGame(state.game)

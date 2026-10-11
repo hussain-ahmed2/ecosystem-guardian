@@ -26,6 +26,7 @@ export default class ForestScene extends Phaser.Scene implements SceneHandlers {
   private hover: HoverInfo | null = null
 
   private built = false
+  private torndown = false
   private controls: CameraControls | null = null
   private terrain: TerrainRenderer | null = null
   private entities: EntityRenderer | null = null
@@ -53,6 +54,9 @@ export default class ForestScene extends Phaser.Scene implements SceneHandlers {
     this.input.on('pointerup', this.onPointerUpHandler)
     this.input.on('pointermove', this.onPointerMoveHandler)
     this.events.once('shutdown', this.onShutdownHandler)
+    // `game.destroy()` tears scenes down without emitting `shutdown`, so the
+    // destroy hook is what keeps a dead scene from staying wired to the bridge.
+    this.events.once('destroy', this.onShutdownHandler)
 
     // Attaching replays the latest pushed snapshot (building on first game).
     bridge.attach(this)
@@ -171,12 +175,15 @@ export default class ForestScene extends Phaser.Scene implements SceneHandlers {
   }
 
   private handleShutdown(): void {
+    if (this.torndown) return
+    this.torndown = true
     bridge.detach(this)
     bridge.emitHover(null)
     this.hover = null
     this.input.off('pointerup', this.onPointerUpHandler)
     this.input.off('pointermove', this.onPointerMoveHandler)
     this.events.off('shutdown', this.onShutdownHandler)
+    this.events.off('destroy', this.onShutdownHandler)
 
     this.overlay?.destroy()
     this.disasters?.destroy()

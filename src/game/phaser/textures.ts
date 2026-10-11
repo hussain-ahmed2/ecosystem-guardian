@@ -194,12 +194,18 @@ const warned = new Set<string>()
 /**
  * Returns true when `key` was missing and a placeholder was generated.
  * Missing art is expected while assets are still being produced, so the
- * warning is emitted exactly once per key.
+ * warning is emitted exactly once per key. Textures the game builds on purpose
+ * (the terrain atlas) pass `generated` to stay quiet.
  */
-export function ensureTexture(scene: Phaser.Scene, key: string, build: () => void): boolean {
+export function ensureTexture(
+  scene: Phaser.Scene,
+  key: string,
+  build: () => void,
+  options: { generated?: boolean } = {},
+): boolean {
   if (scene.textures.exists(key)) return false
   build()
-  if (!warned.has(key)) {
+  if (!options.generated && !warned.has(key)) {
     warned.add(key)
     console.warn(`[game] texture "${key}" missing — using generated placeholder`)
   }
@@ -356,5 +362,5 @@ export function ensureTerrainAtlas(scene: Phaser.Scene): void {
       })
     }
     dynamic.render()
-  })
+  }, { generated: true })
 }
